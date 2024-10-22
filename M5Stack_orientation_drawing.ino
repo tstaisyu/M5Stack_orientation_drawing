@@ -14,7 +14,7 @@
  */
 
 #include <M5Stack.h>
-#include <Madgwick.h>
+#include <MadgwickAHRS.h>
 Madgwick MadgwickFilter;
 
 int16_t ax, ay, az;//加速度　int16_tは2バイトの符号付き整数
@@ -24,9 +24,12 @@ float ROLL, PITCH, YAW;
 void setup()
 {
     M5.begin();
+    M5.IMU.Init();
     Serial.begin(115200);
     delay(300);
     MadgwickFilter.begin(100);//フィルタのサンプリングを100Hzで
+    M5.Lcd.setTextSize(2);
+  
 }
 
 void loop()
@@ -35,9 +38,13 @@ void loop()
     ROLL = MadgwickFilter.getRoll();
     PITCH = MadgwickFilter.getPitch();
     YAW  = MadgwickFilter.getYaw();
-    Serial.print(ROLL); Serial.print(",");
-    Serial.print(PITCH); Serial.print(",");
-    Serial.print(YAW);
-    Serial.print("\n");
-    delay(10);
+    M5.Lcd.clear();
+    M5.Lcd.setCursor(20, 0);    
+    M5.Lcd.printf("Roll: %d", ROLL);
+    M5.Lcd.setCursor(40, 0);    
+    M5.Lcd.printf("Pitch: %d", PITCH);
+    M5.Lcd.setCursor(60, 0);    
+    M5.Lcd.printf("Yaw: %d", YAW);
+
+    delay(50);
 }
